@@ -7,31 +7,42 @@ import com.cvirtual.mentoring.entity.Employee;
 import com.cvirtual.mentoring.persistence.repository.EmployeeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequestMapping("/employee")
 public class EmployeeController {
 
     @Autowired
     EmployeeRepository employeeRepository;
     
     @GetMapping
-    public List<Employee> getAll() {
+    public HttpEntity<List<Employee>> getAll() {
         List<Employee> list = new ArrayList<>();
 
         employeeRepository.findAll().forEach(list::add);
-        return list;
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable Long id) {
-        return employeeRepository.findById(id).orElse(null);
+    public HttpEntity<Employee> getById(@PathVariable Long id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+
+        if(employee == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(employee, HttpStatus.OK);
+        }
     }
 
     @PostMapping

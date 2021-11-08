@@ -37,12 +37,9 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public HttpEntity<Employee> getById(@PathVariable Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
+        HttpStatus status = employee == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
 
-        if(employee == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(employee, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(employee, status);
     }
 
     @PostMapping

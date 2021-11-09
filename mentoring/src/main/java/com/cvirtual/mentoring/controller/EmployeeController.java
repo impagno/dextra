@@ -42,6 +42,15 @@ public class EmployeeController {
         return new ResponseEntity<>(employee, status);
     }
 
+    @GetMapping("/name/{name}")
+    public HttpEntity<Employee> getByName(@PathVariable String name) {
+        Employee employee = employeeRepository.findByName(name);
+
+        HttpStatus status = employee == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+
+        return new ResponseEntity<>(employee, status);       
+    }
+
     @PostMapping
     public void add(@RequestBody Employee employee) {
         employeeRepository.save(employee);
